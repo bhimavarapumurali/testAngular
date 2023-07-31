@@ -1,0 +1,139 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-new-email',
+  templateUrl: './new-email.component.html',
+  styleUrls: ['./new-email.component.css']
+})
+export class NewEmailComponent implements OnInit {
+  emailForm: FormGroup;
+
+  constructor(private formBuilder: FormBuilder) {}
+
+  ngOnInit() {
+    this.emailForm = this.formBuilder.group({
+      toRecipients: ['', [Validators.required, Validators.email]],
+      ccRecipients: [''],
+      bccRecipients: [''],
+      subject: ['', Validators.required],
+      body: ['']
+    });
+  }
+
+  sendEmail() {
+    if (this.emailForm.valid) {
+      // Implement the logic to send the email here
+      console.log('Sending email...');
+      console.log('Form Value:', this.emailForm.value);
+    } else {
+      console.log('Form is invalid. Please check the fields.');
+    }
+  }
+
+  get toRecipientsControl() {
+    return this.emailForm.get('toRecipients') as FormControl;
+  }
+}
+---
+
+<div class="new-email-container">
+  <h2>Compose New Email</h2>
+
+  <form [formGroup]="emailForm" (ngSubmit)="sendEmail()">
+    <kendo-formfield>
+      <kendo-label>To</kendo-label>
+      <kendo-multiselect
+        [data]="toRecipients"
+        formControlName="toRecipients"
+      ></kendo-multiselect>
+      <kendo-hint
+        *ngIf="toRecipientsControl.invalid && toRecipientsControl.touched"
+        appearance="error"
+        [position]="['top', 'right']"
+      >
+        Please enter a valid email address.
+      </kendo-hint>
+    </kendo-formfield>
+
+    <!-- Rest of the form fields -->
+
+    <button kendoButton type="submit">Send</button>
+  </form>
+</div>
+
+
+<div class="new-email-container">
+  <h2>Compose New Email</h2>
+  
+  <kendo-formfield>
+    <kendo-label>To</kendo-label>
+    <kendo-multiselect
+      [data]="toRecipients"
+      [(ngModel)]="selectedToRecipients"
+    ></kendo-multiselect>
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label>Cc</kendo-label>
+    <kendo-multiselect
+      [data]="ccRecipients"
+      [(ngModel)]="selectedCcRecipients"
+    ></kendo-multiselect>
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label>Bcc</kendo-label>
+    <kendo-multiselect
+      [data]="bccRecipients"
+      [(ngModel)]="selectedBccRecipients"
+    ></kendo-multiselect>
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label>Subject</kendo-label>
+    <kendo-textbox [(ngModel)]="subject"></kendo-textbox>
+  </kendo-formfield>
+
+  <kendo-formfield>
+    <kendo-label>Body</kendo-label>
+    <kendo-editor [(ngModel)]="body"></kendo-editor>
+  </kendo-formfield>
+
+  <button kendoButton (click)="sendEmail()">Send</button>
+</div>
+
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'app-new-email',
+  templateUrl: './new-email.component.html',
+  styleUrls: ['./new-email.component.css']
+})
+export class NewEmailComponent implements OnInit {
+  emailForm: FormGroup;
+
+  constructor(private formBuilder: FormBuilder) {}
+
+  ngOnInit() {
+    this.emailForm = this.formBuilder.group({
+      toRecipients: this.formBuilder.control(''),
+      ccRecipients: this.formBuilder.control(''),
+      bccRecipients: this.formBuilder.control(''),
+      subject: this.formBuilder.control(''),
+      body: this.formBuilder.control('')
+    });
+  }
+
+  sendEmail() {
+    if (this.emailForm.valid) {
+      // Implement the logic to send the email here
+      console.log('Sending email...');
+      console.log('Form Value:', this.emailForm.value);
+    } else {
+      console.log('Form is invalid. Please check the fields.');
+    }
+  }
+}
